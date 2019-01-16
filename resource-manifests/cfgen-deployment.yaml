@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cfgen-deployment
+  labels:
+    app: cfgen
+spec:
+  replicas: 1
+  minReadySeconds: 15
+  selector:
+    matchLabels:
+      app: cfgen
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cfgen
+    spec:
+      containers:
+        - name: cfgen
+          image: cfgen:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
