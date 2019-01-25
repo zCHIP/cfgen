@@ -21,7 +21,7 @@ spec:
       containers:
         - name: cfgen
           image: cfgen:latest
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           env:
             - name: WORKING_NAMESPACE
               valueFrom:
@@ -34,6 +34,14 @@ spec:
           volumeMounts:
             - mountPath: /confsout
               name: configs-volume
+
+        - name: bb
+          image: busybox
+          command: ['sleep', '3600']
+          volumeMounts:
+            - mountPath: /confsout
+              name: configs-volume
+
       volumes:
         - name: configs-volume
           emptyDir: {}

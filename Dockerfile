@@ -9,6 +9,8 @@ RUN echo "Installing dependencies" \
 
 # Create appuser
 RUN adduser -D -g '' appuser
+
+# Copy the sources to build
 COPY . /go/src/cfgen/
 WORKDIR /go/src/cfgen/
 
@@ -27,15 +29,15 @@ RUN cd cfgensvc \
 ### STAGE 2: build the image
 FROM scratch
 
-# Import from builder.
+# Import from builder certs and passwd
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 
 # Copy the static executables
 COPY --from=builder ["/go/bin/cfgencli", "/go/bin/cfgensvc", "/go/bin/"]
 
-# Use an unprivileged user.
+# Use an unprivileged user
 USER appuser
 
-# Run the # binary by default
+# Run the service binary by default
 ENTRYPOINT ["/go/bin/cfgensvc"]
