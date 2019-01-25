@@ -20,11 +20,11 @@ RUN go mod download
 
 # Build CLI binary
 RUN cd cfgencli \
-    && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/cfgencli
+    && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/cfgencli
 
 # Build cfgensvc binary
 RUN cd cfgensvc \
-    && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/cfgensvc
+    && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/cfgensvc
 
 ### STAGE 2: build the image
 FROM scratch
