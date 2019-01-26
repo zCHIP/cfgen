@@ -1,13 +1,13 @@
 package cfgen
 
 import (
-    "fmt"
-    "io"
-    "text/template"
+	"fmt"
+	"io"
+	"text/template"
 )
 
 const (
-	dnsRoot         string = "svc.cluster.local"
+	dnsRoot string = "svc.cluster.local"
 
 	templateContent string = `
 location /{{.ServiceName}} {
@@ -27,23 +27,23 @@ location /{{.ServiceName}} {
 )
 
 type fields struct {
-    ServiceName string
-    ServiceFQDN string
+	ServiceName string
+	ServiceFQDN string
 }
 
 func Generate(svcName, namespace string, wr io.Writer) error {
-    // Creates the template
-    t, err := template.New("NginxConfig").Parse(templateContent)
-    if err != nil {
-        return err
-    }
+	// Creates the template
+	t, err := template.New("NginxConfig").Parse(templateContent)
+	if err != nil {
+		return err
+	}
 
-    f := fields{svcName, fmt.Sprintf("%s.%s.%s", svcName, namespace, dnsRoot)}
+	f := fields{svcName, fmt.Sprintf("%s.%s.%s", svcName, namespace, dnsRoot)}
 
-    // Applying template
-    if err := t.Execute(wr, f); err != nil {
-        return err
-    }
+	// Applying template
+	if err := t.Execute(wr, f); err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
