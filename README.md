@@ -27,7 +27,7 @@ docker run --entrypoint "/go/bin/cfgencli" cfgen:latest -kube-config /path/to/co
 
 ## cfgensvc
 
-Web application designed to be run in k8s clusters. Listen to k8s events and manages ngingx configuration files if a new service added or deleted.
+Web application designed to be run in k8s clusters. Listen to k8s events and manages nginx configuration files if a new service added or deleted.
 
 ### Installation
 

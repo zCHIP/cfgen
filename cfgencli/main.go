@@ -1,16 +1,16 @@
 package main
 
 import (
-    "cfgen"
-    "flag"
-    metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-    "k8s.io/client-go/kubernetes"
-    _ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
-    "k8s.io/client-go/tools/clientcmd"
-    "k8s.io/client-go/util/homedir"
-    "log"
-    "os"
-    "path/filepath"
+	"cfgen"
+	"flag"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/util/homedir"
+	"log"
+	"os"
+	"path/filepath"
 )
 
 var (
@@ -22,7 +22,7 @@ var (
 func init() {
 	// Command-line arguments
 	flag.StringVar(&namespace, "namespace", "default",
-	    "Sets the k8s namespace to work with. If not set, uses default namespace.")
+		"Sets the k8s namespace to work with. If not set, uses default namespace.")
 	flag.StringVar(&cfgOutputPath, "output-path", "",
 		"Sets path to save the generated configs. If not set, prints generated configs to stdout.")
 	flag.StringVar(&kubeConfigPath, "kube-config", filepath.Join(homedir.HomeDir(), ".kube", "config"),
@@ -30,7 +30,7 @@ func init() {
 }
 
 func main() {
-    // Parses the command line arguments
+	// Parses the command line arguments
 	flag.Parse()
 
 	// Checks if kubeconfig exists
@@ -40,16 +40,16 @@ func main() {
 
 	// If output path is specified
 	if cfgOutputPath != "" {
-        // Checking if the specified output path exists
-        fileInfo, err := os.Stat(cfgOutputPath)
-        if os.IsNotExist(err) {
-            log.Fatalf("ERROR The specified output path does not exist: %s\n", cfgOutputPath)
-        }
-        // Checking if specified output path is directory
-        if !fileInfo.IsDir() {
-            log.Fatalf("ERROR The specified output path is not a directory: %s\n", cfgOutputPath)
-        }
-    }
+		// Checking if the specified output path exists
+		fileInfo, err := os.Stat(cfgOutputPath)
+		if os.IsNotExist(err) {
+			log.Fatalf("ERROR The specified output path does not exist: %s\n", cfgOutputPath)
+		}
+		// Checking if specified output path is directory
+		if !fileInfo.IsDir() {
+			log.Fatalf("ERROR The specified output path is not a directory: %s\n", cfgOutputPath)
+		}
+	}
 
 	log.Printf("INFO Using kubeconfig:    %s\n", kubeConfigPath)
 	log.Printf("INFO Using k8s namespace: %s\n", namespace)
@@ -81,23 +81,23 @@ func main() {
 		log.Printf("INFO Generating config for service %d of %d | Name: %s, Type: %s\n",
 			i+1, servicesCount, service.Name, service.Spec.Type)
 
-        if cfgOutputPath != "" {
-            // TODO Check if the file exists
-            // Writes to file
-            wr, err := os.Create(filepath.Join(cfgOutputPath, service.Name))
-            if err != nil {
-                log.Fatalf("ERROR Can't create the file, error: %s\n", err)
-            }
+		if cfgOutputPath != "" {
+			// TODO Check if the file exists
+			// Writes to file
+			wr, err := os.Create(filepath.Join(cfgOutputPath, service.Name))
+			if err != nil {
+				log.Fatalf("ERROR Can't create the file, error: %s\n", err)
+			}
 
-            if err := cfgen.Generate(service.Name, namespace, wr); err != nil {
-                log.Fatalf("ERROR Can't generate the config for %s, error: %s\n", service.Name, err)
-            }
-        } else {
-            // Writes to stdout
-            if err := cfgen.Generate(service.Name, namespace, os.Stdout); err != nil {
-                log.Fatalf("ERROR Can't generate the config for %s, error: %s\n", service.Name, err)
-            }
-        }
+			if err := cfgen.Generate(service.Name, namespace, wr); err != nil {
+				log.Fatalf("ERROR Can't generate the config for %s, error: %s\n", service.Name, err)
+			}
+		} else {
+			// Writes to stdout
+			if err := cfgen.Generate(service.Name, namespace, os.Stdout); err != nil {
+				log.Fatalf("ERROR Can't generate the config for %s, error: %s\n", service.Name, err)
+			}
+		}
 
 	}
 }
