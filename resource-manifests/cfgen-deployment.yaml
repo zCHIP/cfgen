@@ -4,18 +4,24 @@ metadata:
   name: cfgen-deployment
   labels:
     app: cfgen
+    owner: devops
+    system: ingress
 spec:
   replicas: 1
   minReadySeconds: 15
   selector:
     matchLabels:
       app: cfgen
+      owner: devops
+      system: ingress
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: cfgen
+        owner: devops
+        system: ingress
     spec:
       serviceAccountName: cfgen-sa
       containers:
