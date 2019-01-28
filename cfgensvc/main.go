@@ -5,12 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/fields"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/cache"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +12,13 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/fields"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/cache"
 )
 
 const (
@@ -193,7 +194,9 @@ func svcConfigsInit(client *kubernetes.Clientset) error {
 	}
 
 	// Get all config files in the pre-defined path
-	dirFiles, err := ioutil.ReadDir(getConfOutPath())
+	outPath := getConfOutPath()
+	log.Printf("[INFO] out path: %q\n", outPath)
+	dirFiles, err := ioutil.ReadDir(outPath)
 	if err != nil {
 		log.Printf("ERROR Unable to read files in \"%s\", error: %s\n", getConfOutPath(), err)
 		return err
@@ -201,7 +204,7 @@ func svcConfigsInit(client *kubernetes.Clientset) error {
 
 	// Cleans up the files list from dirs and disabled configs
 	files := cleanFileList(&dirFiles)
-
+	log.Printf("[INFO] Found next files: %q\n", files)
 	// Checking existing config files
 	for _, file := range files {
 		// Gets name of the file without an extension (for ex: ".conf")
@@ -245,6 +248,7 @@ func svcConfigsInit(client *kubernetes.Clientset) error {
 }
 
 func main() {
+	log.Println("[INFO] Starting cfgen service")
 	// Gets a k8s client
 	client := createInClusterClient()
 
