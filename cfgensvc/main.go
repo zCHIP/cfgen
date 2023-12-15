@@ -2,6 +2,7 @@ package main
 
 import (
 	"cfgen"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -186,8 +187,10 @@ func svcUpdated(oldObj, newObj interface{}) {
 // but a service for it is not there, it will be renamed with the following pattern:
 // "<existing_file>.<current_date>.disabled" where "current_date" is "yyyyMMddHHmmss"
 func svcConfigsInit(client *kubernetes.Clientset) error {
+	ctx := context.TODO()
+
 	// Gets all available services in the working namespace
-	services, err := client.CoreV1().Services(getWorkingNamespace()).List(metav1.ListOptions{})
+	services, err := client.CoreV1().Services(getWorkingNamespace()).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		log.Printf("ERROR Unable to get services list for \"%s\" namespace, error: %s\n", getWorkingNamespace(), err)
 		return err

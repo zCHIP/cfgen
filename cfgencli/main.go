@@ -2,6 +2,7 @@ package main
 
 import (
 	"cfgen"
+	"context"
 	"flag"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -32,6 +33,7 @@ func init() {
 func main() {
 	// Parses the command line arguments
 	flag.Parse()
+	ctx := context.Background()
 
 	// Checks if kubeconfig exists
 	if _, err := os.Stat(kubeConfigPath); os.IsNotExist(err) {
@@ -69,7 +71,7 @@ func main() {
 
 	// Gets all services in the given k8s namespace
 	// TODO Implement additional filtering using ListOptions
-	services, err := clientSet.CoreV1().Services(namespace).List(metav1.ListOptions{LabelSelector: "", FieldSelector: ""})
+	services, err := clientSet.CoreV1().Services(namespace).List(ctx, metav1.ListOptions{LabelSelector: "", FieldSelector: ""})
 	if err != nil {
 		log.Fatalf("ERROR Unable to get the list of services, error: %s\n", err)
 	}
